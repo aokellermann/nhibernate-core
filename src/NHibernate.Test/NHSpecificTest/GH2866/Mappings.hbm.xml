@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="NHibernate.Test"
+                   namespace="NHibernate.Test.NHSpecificTest.GH2866">
+
+  <class name="User" table="User" optimistic-lock="dirty" dynamic-update="true">
+    <id name="Id">
+      <generator class="hilo"/>
+    </id>
+
+    <set name="TenantUsers" cascade="all-delete-orphan">
+      <key column="TenantUserId" not-null="true"/>
+      <one-to-many class="TenantUser"/>
+    </set>
+  </class>
+
+  <class name="Tenant" optimistic-lock="dirty" dynamic-update="true">
+    <id name="Id">
+      <generator class="hilo"/>
+    </id>
+  </class>
+
+  <class name="TenantUserPerson" optimistic-lock="dirty" dynamic-update="true">
+    <id name="Id">
+      <generator class="hilo"/>
+    </id>
+
+    <many-to-one name="TenantUser" unique="true" />
+  </class>
+
+  <class name="TenantUser" optimistic-lock="dirty" dynamic-update="true">
+    <id name="Id">
+      <generator class="hilo"/>
+    </id>
+
+    <many-to-one name="User" unique="true" />
+    <many-to-one name="Tenant" unique="true" cascade="save-update" />
+    <one-to-one name="TenantUserPerson" property-ref="TenantUser" cascade="all-delete-orphan" />
+  </class>
+
+</hibernate-mapping>
